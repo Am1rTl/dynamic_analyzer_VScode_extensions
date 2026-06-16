@@ -4,14 +4,24 @@ import pwd
 import shutil
 import json
 import psutil
+from pathlib import Path
 
-def load_config(config_path="config.json"):
-    """Загружает конфигурацию из JSON-файла."""
+# Корень репозитория = dynamic/..
+REPO_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_CONFIG = REPO_ROOT / "configs" / "config.example.json"
+
+
+def load_config(config_path: str | None = None):
+    """Загружает конфигурацию из JSON-файла.
+
+    По умолчанию берётся ``configs/config.example.json`` из корня репозитория.
+    """
+    path = Path(config_path) if config_path else DEFAULT_CONFIG
     try:
-        with open(config_path, "r") as file:
+        with open(path, "r", encoding="utf-8") as file:
             return json.load(file)
     except FileNotFoundError:
-        print("[ERROR] Файл конфигурации не найден!")
+        print(f"[ERROR] Файл конфигурации не найден: {path}")
         return {}
 
 def create_sandbox_user(username="vscode_sandbox"):

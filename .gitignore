@@ -1,0 +1,32 @@
+# --- Python ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Editors / OS ---------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Runtime state written by the web dashboard ---------------------------
+# Состояние правил и прочие JSON, которые пересоздаются приложением.
+web_dashboard/data/rules.json
+web_dashboard/data/*.log
+
+# --- Local sandbox files / kernel traces ---------------------------------
+# /tmp/asd, /tmp/asda и т.п. — служебные файлы, которые создаются
+# scripts/init.sh во время работы. В репозиторий не коммитим ничего,
+# что лежит в /tmp.

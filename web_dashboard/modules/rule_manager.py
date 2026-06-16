@@ -4,8 +4,8 @@ import subprocess
 from typing import Dict, List, Optional
 
 class RuleManager:
-    def __init__(self):
-        self.rules_file = "rules"
+    def __init__(self, rules_file: str = "rules"):
+        self.rules_file = rules_file
         self.current_rules = self.load_rules()
 
     def load_rules(self) -> Dict:

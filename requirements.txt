@@ -1,0 +1,7 @@
+# Runtime requirements for the static analyzer, dynamic monitor and
+# Flask-based web dashboard. Pin loosely; the project doesn't rely on
+# bleeding-edge API surfaces.
+
+psutil>=5.9
+flask>=2.3
+requests>=2.31

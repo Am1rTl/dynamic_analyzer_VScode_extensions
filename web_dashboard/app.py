@@ -1,12 +1,18 @@
+import os
 from functools import lru_cache
 import subprocess
 import requests as r
 import re
 from flask import Flask, json, render_template, jsonify, request
-from format_logs import get_logs
-from rule_manager import RuleManager
+from modules.format_logs import get_logs
+from modules.rule_manager import RuleManager
 
 app = Flask(__name__)
+
+# Runtime data files (rules state, etc.)
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+RULES_FILE = os.path.join(DATA_DIR, "rules.json")
 
 def get_extensions_list():
     try:
@@ -223,7 +229,7 @@ def search_extension():
 
 @app.route('/about')
 def about():
-    return render_template('about_one.html')
+    return render_template('about.html')
 
 @app.route('/install_extension/<ext_id>')
 def install_extension(ext_id):
@@ -243,7 +249,7 @@ def install_extension(ext_id):
 def about_ext(ext):
     name, author, img, version, rating, rating_count, installs, downloads = get_ext_info(ext)
     short_description, overview = get_ext_description(ext)
-    return render_template('about_one.html', 
+    return render_template('about.html',
                          id=ext, 
                          name=name, 
                          author=author, 
@@ -258,7 +264,7 @@ def about_ext(ext):
 
 @app.route('/rules')
 def rules():
-    return render_template('edir_rule.html')
+    return render_template('rules.html')
 
 @app.route('/logs')
 def logs():
@@ -295,24 +301,24 @@ def set_rule():
 @app.route("/save_data", methods=['POST'])
 def save_data():
     data = request.json
-    with open("rules", "w") as f:
+    with open(RULES_FILE, "w") as f:
         f.write(json.dumps(data))
-    
+
     # Применить правила
-    rule_manager = RuleManager()
+    rule_manager = RuleManager(rules_file=RULES_FILE)
     rule_manager.apply_rules()
-    
+
     return "OK"
 
 @app.route('/clear_rules')
 def clear_rules():
-    with open("rules", "w") as f:
+    with open(RULES_FILE, "w") as f:
         f.write("{}")
     return "OK"
 
 @app.route('/get_saved_rules')
 def get_rules():
-    with open("rules", "r") as f:
+    with open(RULES_FILE, "r") as f:
         data = f.read()
     return data
 
